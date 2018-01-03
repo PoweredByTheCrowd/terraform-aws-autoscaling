@@ -1,0 +1,20 @@
+#cloud-config
+
+ssh_authorized_keys:
+${authorized_keys}
+
+rancher:
+  docker:
+    engine: ${docker_version}
+  services:
+    rancher-agent1:
+      image: rancher/agent:${rancher_agent_version}
+      privileged: true
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+      command: ${rancher_url}
+
+runcmd:
+  - echo vm.max_map_count=262144 >> /etc/sysctl.conf
+  - sysctl -w vm.max_map_count=262144
+
